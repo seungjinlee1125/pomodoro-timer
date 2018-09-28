@@ -4,8 +4,9 @@
 const START_TIMER = 'START_TIMER';
 const RESTART_TIMER = 'RESTART_TIMER';
 const ADD_SECOND = 'ADD_SECOND';
+const TOGGLE_TIMER = 'TOGGLE_TIMER';
 
-// Action Creator
+// Action Creators
 
 function startTimer(){
     return{
@@ -18,6 +19,11 @@ function restartTimer(){
         type : RESTART_TIMER
     };
 }
+function toggleTimer(){
+    return {
+        type: TOGGLE_TIMER
+    };
+}
 
 function addSecond(){
     return{
@@ -27,13 +33,14 @@ function addSecond(){
 
 // reducer 
 
-const TIME_DURATION = 1500;
+const TIME_DURATION = 15000;
 
 const initialState = {
     isPlaying: false,
+    isPaused: false,
     elapsedTime: 0,
     timeDuration: TIME_DURATION,
-}
+};
 
 function reducer(state = initialState, action){
     switch(action.type){
@@ -43,6 +50,10 @@ function reducer(state = initialState, action){
             return applyRestartTimer(state);
         case ADD_SECOND:
             return applyAddSecond(state);
+        case TOGGLE_TIMER:
+            return applyToggleTimer(state);
+        default:
+            return state;
     }
 }
 
@@ -59,32 +70,45 @@ function applyRestartTimer(state){
     return{
         ...state,
         isPlaying: false,
+        isPaused: false,
         elapsedTime: 0,
     };
 }
 
-function applyStartTimer(state){
+function applyAddSecond(state){
     if(state.elapsedTime < TIME_DURATION){
         return{
             ...state,
-            elapsedTime : elapsedTime + 1
+            elapsedTime : state.elapsedTime + 1
         };
     }
     else {
         return{
-            ...state,
-            isPlaying: false,
+            // ...state,
+            // isPlaying: false,
+            // elapsedTime: 0
+            initialState
         };
     }
 }
 
-// Action Creator
+function applyToggleTimer(state){
+    return{
+        ...state,
+        isPaused: !state.isPaused,        
+    };
+}
 
-const actionCreator = {
+// Export Action Creator
+
+const actionCreators = {
     startTimer,
     restartTimer,
-    addSecond
-}
+    addSecond,
+    toggleTimer,
+};
+
+export { actionCreators };
 
 export default reducer;
 
